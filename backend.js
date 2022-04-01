@@ -140,6 +140,8 @@ function numero(){
 
 // archivos.save(obj)
 // archivos.getById(0.013950166364724792)
-// archivos.getAll()
+archivos.getAll()
 // archivos.deleteById(0.013950166364724792)
 // archivos.deleteAll()
+
+
