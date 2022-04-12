@@ -1,8 +1,5 @@
 
-
 let fs = require("fs")
-
-const path = require("path")
 
 class Contenedor{
     constructor(archivo){
