@@ -1,62 +1,8 @@
 
 
-//Servidor con http
-// const http = require("http")
-// const server = http.createServer((peticion, respuesta)=>{
-//     let dia = new Date();
-//     console.log(dia);
-//     respuesta.end(`<h1>Hola Mundo</h1> <h3>Hoy es ${dia.toDateString()}  y son las ${dia.toLocaleTimeString()}</h3>`);
-// })
-
-// const connectedServer = server.listen(8080, ()=>{
-//     console.log(`Servidor http escuchando en el puerto ${connectedServer.address().port}`);
-// })
-//---------------------------------
-
-//Servidor con express!! 
-
 let fs = require("fs")
 
 const path = require("path")
-
-const express = require("express")
-const app = express()
-const server = app.listen(8080, ()=>{
-    console.log(`Servidor http escuchando en el puerto ${server.address().port}`);
-})
-            //Con el metodo on podemos condifurar un evento "error" sobre la salida del "listen"
-// server.on("Error!!", error => console.log(`Error en el servidor ${error}`))
-            //Con el metodo Get podemos hacer hacer peticiones a la ruta raiz del servidor.
-            app.get('/', (req, res) =>{
-                let dia = new Date()
-                res.send(`<h1 style="color: blue">Hola Mundo!!</h1> <h3>Hoy es ${dia.toDateString()}  y son las ${dia.toLocaleTimeString()}</h3>`)
-            })
-
-            app.get('/productos', (req, res) =>{
-                fs.readFile("./text.json" , "utf-8", (err, data)=>{
-                    if(err){
-                        console.log("Error!!");
-                    }else{
-                        let newArr = JSON.parse(data)
-                        res.send(newArr)
-                    }
-                })
-                // res.sendFile(path.join(__dirname +  "/index.html"))
-            })
-
-            app.get('/ramdom', (req, res) =>{
-                fs.readFile("./text.json" , "utf-8", (err, data)=>{
-                    if(err){
-                        console.log("Error!!");
-                    }else{
-                        let newArray = JSON.parse(data)
-                        let ramdom = newArray[Math.floor(Math.random() * newArray.length)];
-                        console.log(Math.floor(Math.random() * newArray.length));
-                        res.send(ramdom)
-                    }
-                // res.send({message : 'Estae FyH!'})
-            })
-        })
 
 class Contenedor{
     constructor(archivo){
@@ -179,9 +125,8 @@ class Contenedor{
             }
         })
     }
-
-
 }
+
 let archivos = new Contenedor("text.json");
 
 const obj = {
@@ -203,3 +148,4 @@ function numero(){
 // archivos.deleteAll()
 
 
+// module.exports = Contenedor
