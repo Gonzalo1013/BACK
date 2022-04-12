@@ -55,7 +55,6 @@ class Contenedor{
         })
     }
 
-
     getById(numero){
         fs.readFile(`./${this.archivo}`, "utf-8" , (err,data)=>{
             if(err){
@@ -72,7 +71,6 @@ class Contenedor{
         })
     }
 
-
     getAll(){
         fs.readFile(`./${this.archivo}` , "utf-8" , (err, data)=>{
             if(err){
@@ -83,7 +81,6 @@ class Contenedor{
             }
         })
     }
-
 
     deleteById(id){
             fs.readFile(`./${this.archivo}` , "utf-8" , (err, data)=>{
@@ -124,25 +121,4 @@ class Contenedor{
     }
 }
 
-let archivos = new Contenedor("text.json");
-
-const obj = {
-    title: "Vasos",
-    price: 150,
-    img: "asdasd",
-    id: numero()
-}
-
-function numero(){
-    let num = Math.random()
-    return num
-}
-
-// archivos.save(obj)
-// archivos.getById(0.013950166364724792)
-// archivos.getAll()
-// archivos.deleteById(0.013950166364724792)
-// archivos.deleteAll()
-
-
-// module.exports = Contenedor
+module.exports = Contenedor;

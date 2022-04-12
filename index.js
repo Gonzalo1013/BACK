@@ -1,4 +1,4 @@
-// let contenedor = require("./backend.js")
+let Contenedor = require("./backend.js")
 
 const fs = require("fs")
 // const path = require("path")
@@ -40,3 +40,23 @@ const server = app.listen(8080, ()=>{
             })
         })
         
+
+        let archivos = new Contenedor("text.json");
+
+        const obj = {
+            title: "Vasos",
+            price: 150,
+            img: "asdasd",
+            id: numero()
+        }
+        
+        function numero(){
+            let num = Math.random()
+            return num
+        }
+        
+        // archivos.save(obj)
+        // archivos.getById(0.013950166364724792)
+        // archivos.getAll()
+        // archivos.deleteById(0.013950166364724792)
+        // archivos.deleteAll()
