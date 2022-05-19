@@ -1,62 +1,103 @@
-let Contenedor = require("./backend.js")
-
-const fs = require("fs")
-// const path = require("path")
-
 const express = require("express")
 const app = express()
-const server = app.listen(8080, ()=>{
-    console.log(`Servidor http escuchando en el puerto ${server.address().port}`);
+const multer = require('multer')
+const fs = require('fs')
+// const path = require("path")
+
+
+const addPerson = require("./routers/postProduct");
+const allPerson = require("./routers/getProduct");
+const getById = require('./routers/getIdProduct');
+const deletePerson = require('./routers/deleteProduct');
+const putPerson = require('./routers/putProduct')
+
+app.use(express.json()) //Para que funcione req.body ya que lee solo formato json
+
+app.use("/api/product", [allPerson, addPerson, getById, deletePerson, putPerson]) //Todas las module exports con metodos
+
+//PATH principal con HTML de Public
+app.get("/", (req,res)=>{
+    res.sendFile(__dirname + "/public/index.html")
+})
+//--------------------------------------------------------------------------------------------------
+
+//MULTER PARA GUARDAR ARCHIVOS
+let storage = multer.diskStorage({
+    destination: function (req, file, cb){
+        cb(null, "uploads")
+    },
+    filename: function (req, file, cb){
+        cb(null, file.originalname)
+    },
+});
+
+let upload = multer({storage:storage})
+
+app.post('/' , upload.single('thumbnail'), (req, res) => {
+    fs.readFile('./text.json' , 'utf-8' , (err, data) => {
+        if(err){
+            console.log('Error al leer el Archivo');
+        }else{
+            const arrayOfProduct = []
+            let file = req.file
+            if(data === ''){
+                if(!file){
+                    res.status(400).send({message: 'No se pudo cargar la imagen'})
+                }else{
+                    const {title, price} = req.body
+                    let firstProduct = {
+                            title,
+                            price,
+                            thumbnail: file.path,
+                            id: 1
+                        }
+                    arrayOfProduct.push(firstProduct)
+                    fs.writeFile('./text.json' , JSON.stringify(arrayOfProduct), 'utf-8' , (err) => {
+                        if(err){
+                            console.log('error al crear nuevo y primer producto');
+                        }else{
+                            console.log('Se guardo el primer Producto');
+                            res.send({upload: 'ok', body: firstProduct})
+                        }
+                    })
+                }
+            }
+        
+            else{
+                let parseData = JSON.parse(data)
+                let ind = parseData[parseData.length -1]['id']
+                let newId = ind +1
+                if(!file){
+                    res.status(400).send({messaje: 'No se encontro la imagen'})
+                }else{
+                    const {title, price} = req.body
+                    let newProduct = {
+                        title,
+                        price,
+                        thumbnail: file.path,
+                        id: newId
+                    }
+                    parseData.push(newProduct)
+                    fs.writeFile('./text.json' , JSON.stringify(parseData), 'utf-8' , (err) => {
+                        if(err){
+                            console.log('Error al escribir el archivo');
+                        }else{
+                            console.log('TODO OK');
+                            res.send({upload: 'ok', body : newProduct})
+                        }
+                    })
+                }    
+            }
+        }
+    })
 })
 
-        app.get('/', (req, res) =>{
-            let dia = new Date()
-            res.send(`<h1 style="color: red">Hola Mundo!!</h1> <h3>Hoy es ${dia.toDateString()}  y son las ${dia.toLocaleTimeString()}</h3>`)
-        })
-        
-        app.get('/productos', (req, res) =>{
-            fs.readFile("./text.json" , "utf-8", (err, data)=>{
-                if(err){
-                    console.log("Error!!");
-                }else{
-                    let newArr = JSON.parse(data)
-                    res.send(newArr)
-                }
-            })
-            // res.sendFile(path.join(__dirname +  "/index.html"))
-        })
-        
-        app.get('/productosRamdom', (req, res) =>{
-            fs.readFile("./text.json" , "utf-8", (err, data)=>{
-                if(err){
-                    console.log("Error!!");
-                }else{
-                    let newArray = JSON.parse(data)
-                    let ramdom = newArray[Math.floor(Math.random() * newArray.length)];
-                    console.log(Math.floor(Math.random() * newArray.length));
-                    res.send(ramdom)
-                }
-            // res.send({message : 'Estae FyH!'})
-            })
-        })
-        
 
-        let archivos = new Contenedor("text.json");
 
-        const obj = {
-            title: "Vasos",
-            price: 150,
-            img: "asdasd",
-            id: numero()
-        }
-        
-        function numero(){
-            let num = Math.random()
-            return num
-        }
-        
-        // archivos.save(obj)
-        // archivos.getById(0.013950166364724792)
-        // archivos.getAll()
-        // archivos.deleteById(0.013950166364724792)
-        // archivos.deleteAll()
+//-------------------------------------------------------------------------------------------
+
+//SERVIDOR
+app.listen(8080, ()=>{
+    console.log("Server escuchando");
+})
+
